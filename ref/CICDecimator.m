@@ -6,6 +6,7 @@ function [y] = CICDecimator(s, varargin)
     addParameter(ip,'M',  1, @(x) validateattributes(x, {'numeric'},{'positive','integer'}));
     addParameter(ip,'R',  8, @(x) validateattributes(x, {'numeric'},{'positive','integer'}));
     addParameter(ip,'decimOff', false, @(x) validateattributes(x, {'logical'},{}));
+    addParameter(ip,'compatibilityMode','dsp',@(x) any(strcmp(x,["dsp","hw","stream"])));
      
     parse(ip,varargin{:});
     p = ip.Results;
@@ -15,6 +16,11 @@ function [y] = CICDecimator(s, varargin)
         if p.B(1) + B_growth > 64
            error('Bit size is too large to be simulated using int64'); 
         end
+        B_in  = p.B + B_growth;
+        B_out = p.B;
+        B = [repmat(B_in, 2*p.N-1, 1);B_out]; % all stages but the last have same input width
+        A = 2.^(B-1);
+        C = 2.^(B);
     end
 %     s = int64(s); % make sure we have integers
     
@@ -25,6 +31,7 @@ function [y] = CICDecimator(s, varargin)
     int(:, 1) = s(:);
     for i=1:p.N
        int(:, i+1) = cumsum(int(:, i));
+%        int(:, i+1) = mod(int(:, i+1) + A(i), C(i)) - A(i); % quantize
     end
     
     % downsampling
@@ -33,7 +40,11 @@ function [y] = CICDecimator(s, varargin)
         diff = zeros(length(s), p.N+1);
     else
         % start downsampling after p.R/2 integrator steps (pipeline delay)
-        ds = int(p.R-p.N+1:p.R:end, end);
+        if strcmp(p.compatibilityMode, 'dsp')
+            ds = int(p.R-p.N+1:p.R:end, end);
+        elseif strcmp(p.compatibilityMode, 'hw')
+            ds = int(p.R:p.R:end, end);
+        end
         diff = zeros(ceil(length(s)/p.R), p.N+1);
     end
 
@@ -48,8 +59,10 @@ function [y] = CICDecimator(s, varargin)
         diff(:, i+1) = diff(:, i) - diff_dly;
     end
     y = diff(:, end);
-    
-    
+%     y = mod(diff(:, end) - 2^(B_in-1), 2^B_in) + 2^(B_in-1);
+%     y = y / 2^(B_in-B_out);
+
+
     %% Streaming version, based on [2] (see misc/README.md)
 %     ints = zeros(1,p.N);
 %     if p.decimOff

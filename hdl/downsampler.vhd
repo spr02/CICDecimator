@@ -5,8 +5,8 @@ use ieee.numeric_std.all;
 
 entity downsampler is
 	generic(
-		R			: integer := 2;
-		DATA_WIDTH	: integer := 34
+		R	: integer := 2;
+		B	: integer := 34
 	);
 	port(
 		ClkxCI		: in  std_logic;
@@ -15,11 +15,11 @@ entity downsampler is
 		
 		ValidxSI	: in  std_logic;
 		ReadyxSO	: out std_logic;
-		DataxDI		: in  std_logic_vector((DATA_WIDTH - 1) downto 0);
+		DataxDI		: in  std_logic_vector((B - 1) downto 0);
 		
 		ValidxSO	: out std_logic;
 		ReadyxSI	: in  std_logic;
-		DataxDO		: out std_logic_vector((DATA_WIDTH - 1) downto 0)
+		DataxDO		: out std_logic_vector((B - 1) downto 0)
 	);
 end downsampler;
 
@@ -32,7 +32,7 @@ architecture arch of downsampler is
 	signal OutRdxS		: std_logic;
 	signal ReadyxSP		: std_logic;
 	signal ValidxSP		: std_logic;
-	signal DataxDP		: std_logic_vector((DATA_WIDTH - 1) downto 0);
+	signal DataxDP		: std_logic_vector((B - 1) downto 0);
 begin
 
 	assert R > 1 report "Decimation factor must be larger than 1 (R = " & integer'image(R) & ")." severity error;
@@ -83,7 +83,5 @@ begin
 	-- data and valid (output/master axis)
 	ValidxSO	<= ValidxSP;
 	DataxDO		<= DataxDP;
-	
-	
 	
 end architecture arch;

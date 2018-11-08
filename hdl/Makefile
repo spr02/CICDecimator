@@ -1,5 +1,8 @@
 SRC=\
 	downsampler.vhd\
+	integrator.vhd\
+	differentiator.vhd\
+	cic_decimator.vhd\
 	cic_decimator_tb.vhd
 clock : $(SRC)
 	ghdl -a --std=93c $(SRC)
