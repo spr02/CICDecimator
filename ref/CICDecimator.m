@@ -59,7 +59,7 @@ function [y] = CICDecimator(s, varargin)
         diff(:, i+1) = diff(:, i) - diff_dly;
     end
     y = diff(:, end);
-%     y = mod(diff(:, end) - 2^(B_in-1), 2^B_in) + 2^(B_in-1);
+%     y = mod(diff(:, end) + 2^(B_in-1), 2^B_in) - 2^(B_in-1);
 %     y = y / 2^(B_in-B_out);
 
 
