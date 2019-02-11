@@ -71,9 +71,9 @@ architecture behav of cic_decimator_tb is
 	
 	constant N			: integer := 4;
 	constant M			: integer := 1;
-	constant R			: integer := 8;
+	constant R			: integer := 64;
 	
-	constant B			: integer := 8;
+	constant B			: integer := 16;
 	
 	
 	signal s_cnt					: unsigned((B - 1) downto 0) := to_unsigned(1, B);
@@ -218,12 +218,12 @@ begin
 	begin
 		s_valid_i	<= '1';
 		s_ready_i	<= '1';
-		s_data_i	<= std_logic_vector(to_signed(1, B));
-		
+-- 		s_data_i	<= std_logic_vector(to_signed(1, B));
+		s_data_i	<= x"7FFF";
 		wait until rising_edge(RstxRB);
 		
 		wait until rising_edge(ClkxC);
-		s_data_i	<= (others => '0');
+-- 		s_data_i	<= (others => '0');
 		
 -- 		for I in 1 to 64 loop
 -- 			wait until rising_edge(ClkxC);

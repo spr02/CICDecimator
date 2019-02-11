@@ -26,7 +26,21 @@ entity cic_decim is
 end cic_decim;
 
 architecture arch of cic_decim is
-	constant REG_WIDTH		: integer := 12; -- TODO: change to maximum reg width
+	
+	function ceil_log2 (x: in integer) return integer is
+		variable tmp    : integer := x;
+		variable ret    : integer := 0;
+	begin
+		while tmp > 1 loop
+			ret := ret + 1;
+			tmp := tmp / 2;
+		end loop;
+		return ret;
+	end function ceil_log2;
+	
+	constant REG_GROWTH		: integer := N * ceil_log2(R*M);
+	constant REG_WIDTH		: integer := B + REG_GROWTH; -- TODO: change to maximum reg width
+	
 	
 	subtype t_data is std_logic_vector((REG_WIDTH - 1) downto 0);
 	
@@ -117,7 +131,7 @@ begin
 	
 	-- connect output axis interface
 	DiffConxD(DiffConxD'high).ready		<= ReadyxSI;
-	DataxDO								<= std_logic_vector(resize(signed(DiffConxD(DiffConxD'high).data), B));
+	DataxDO								<= std_logic_vector(resize(shift_right(signed(DiffConxD(DiffConxD'high).data), REG_GROWTH), B));
 	ValidxSO							<= DiffConxD(DiffConxD'high).valid;
 	
 end architecture arch;
