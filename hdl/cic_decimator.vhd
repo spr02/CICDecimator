@@ -5,10 +5,11 @@ use ieee.numeric_std.all;
 
 entity cic_decim is
 	generic(
-		N	: integer := 4;
-		M	: integer := 1;
-		R	: integer := 16;
-		B	: integer := 16
+		N		: integer := 4;
+		M		: integer := 1;
+		R		: integer := 16;
+		Bin		: integer := 16;
+		Bout	: integer := 16
 	);
 	port(
 		ClkxCI		: in  std_logic;
@@ -17,11 +18,11 @@ entity cic_decim is
 		
 		ValidxSI	: in  std_logic;
 		ReadyxSO	: out std_logic;
-		DataxDI		: in  std_logic_vector((B - 1) downto 0);
+		DataxDI		: in  std_logic_vector((Bin - 1) downto 0);
 		
 		ValidxSO	: out std_logic;
 		ReadyxSI	: in  std_logic;
-		DataxDO		: out std_logic_vector((B - 1) downto 0)
+		DataxDO		: out std_logic_vector((Bout - 1) downto 0)
 	);
 end cic_decim;
 
@@ -39,7 +40,7 @@ architecture arch of cic_decim is
 	end function ceil_log2;
 	
 	constant REG_GROWTH		: integer := N * ceil_log2(R*M);
-	constant REG_WIDTH		: integer := B + REG_GROWTH; -- TODO: change to maximum reg width
+	constant REG_WIDTH		: integer := Bin + REG_GROWTH; -- TODO: change to maximum reg width
 	
 	
 	subtype t_data is std_logic_vector((REG_WIDTH - 1) downto 0);
@@ -131,7 +132,7 @@ begin
 	
 	-- connect output axis interface
 	DiffConxD(DiffConxD'high).ready		<= ReadyxSI;
-	DataxDO								<= std_logic_vector(resize(shift_right(signed(DiffConxD(DiffConxD'high).data), REG_GROWTH), B));
+	DataxDO								<= std_logic_vector(signed(DiffConxD(DiffConxD'high).data((REG_WIDTH - 1) downto (REG_WIDTH - Bout))));
 	ValidxSO							<= DiffConxD(DiffConxD'high).valid;
 	
 end architecture arch;

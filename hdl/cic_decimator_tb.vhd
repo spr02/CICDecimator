@@ -73,10 +73,11 @@ architecture behav of cic_decimator_tb is
 	constant M			: integer := 1;
 	constant R			: integer := 64;
 	
-	constant B			: integer := 16;
+	constant Bin		: integer := 16;
+	constant Bout		: integer := 16;
 	
 	
-	signal s_cnt					: unsigned((B - 1) downto 0) := to_unsigned(1, B);
+	signal s_cnt					: unsigned((Bin - 1) downto 0) := to_unsigned(1, Bin);
 	
 	
 	signal ClkxC					: std_logic;
@@ -85,7 +86,8 @@ architecture behav of cic_decimator_tb is
 	
 	signal s_valid_i, s_valid_o		: std_logic;
 	signal s_ready_i, s_ready_o		: std_logic;
-	signal s_data_i, s_data_o			: std_logic_vector((B - 1) downto 0);
+	signal s_data_i					: std_logic_vector((Bin - 1) downto 0);
+	signal s_data_o					: std_logic_vector((Bout - 1) downto 0);
 	
 begin
 
@@ -150,10 +152,11 @@ begin
 	
 	I0 : entity work.cic_decim
 	generic map(
-		N	=> N,
-		M	=> M,
-		R	=> R,
-		B	=> B
+		N		=> N,
+		M		=> M,
+		R		=> R,
+		Bin		=> Bin,
+		Bout 	=> Bout
 	)
 	port map(
 		ClkxCI		=> ClkxC,
