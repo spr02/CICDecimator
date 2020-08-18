@@ -74,6 +74,7 @@ architecture behav of cic_decimator_tb is
 	
 	constant N			: integer := 4;
 	constant M			: integer := 1;
+	
 	constant R			: integer := 16;
 	
 	constant Bin		: integer := 4;
@@ -229,11 +230,10 @@ begin
 		s_valid_i	<= '1';
 		s_ready_i	<= '1';
 		s_data_i	<= std_logic_vector(to_signed(1, Bin));
-		
 		wait until rising_edge(RstxRB);
 		
 		wait until rising_edge(ClkxC);
-		s_data_i	<= (others => '0');
+-- 		s_data_i	<= (others => '0');
 		
 -- 		for I in 1 to 64 loop
 -- 			wait until rising_edge(ClkxC);
