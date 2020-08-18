@@ -2,31 +2,39 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.math_pkg.all;
 
 entity cic_decim is
 	generic(
-		N	: integer := 4;
-		M	: integer := 1;
-		R	: integer := 16;
-		B	: integer := 16
+		ENCODING : string := "onehot";
+		N		: integer := 4;
+		M		: integer := 1;
+		R		: integer := 16;
+		Bin		: integer := 16;
+		Bout	: integer := 16
 	);
 	port(
 		ClkxCI		: in  std_logic;
 		RstxRBI		: in  std_logic;
 		ClkEnxSI	: in  std_logic;
 		
+		RatexSI		: in  std_logic_vector((ceil_log2(R) - 1) downto 0);
+		
 		ValidxSI	: in  std_logic;
 		ReadyxSO	: out std_logic;
-		DataxDI		: in  std_logic_vector((B - 1) downto 0);
+		DataxDI		: in  std_logic_vector((Bin - 1) downto 0);
 		
 		ValidxSO	: out std_logic;
 		ReadyxSI	: in  std_logic;
-		DataxDO		: out std_logic_vector((B - 1) downto 0)
+		DataxDO		: out std_logic_vector((Bout - 1) downto 0)
 	);
 end cic_decim;
 
 architecture arch of cic_decim is
-	constant REG_WIDTH		: integer := 12; -- TODO: change to maximum reg width
+	
+	constant REG_GROWTH		: integer := N * ceil_log2(R * M);
+	constant REG_WIDTH		: integer := Bin + REG_GROWTH;
 	
 	subtype t_data is std_logic_vector((REG_WIDTH - 1) downto 0);
 	
@@ -74,13 +82,16 @@ begin
 	-- Downsamling by R
 	CICDownsampler : entity work.downsampler
 	generic map(
-		R	=> R,
-		B	=> REG_WIDTH
+		ENCODING	=> ENCODING,
+		R			=> R,
+		B			=> REG_WIDTH
 	)
 	port map(
 		ClkxCI		=> ClkxCI,
 		RstxRBI		=> RstxRBI,
 		ClkEnxSI	=> ClkEnxSI,
+		
+		RatexSI		=> RatexSI,
 		
 		ValidxSI	=> IntConxD(IntConxD'high).valid,
 		ReadyxSO	=> IntConxD(IntConxD'high).ready,
@@ -117,7 +128,7 @@ begin
 	
 	-- connect output axis interface
 	DiffConxD(DiffConxD'high).ready		<= ReadyxSI;
-	DataxDO								<= std_logic_vector(resize(signed(DiffConxD(DiffConxD'high).data), B));
+	DataxDO								<= std_logic_vector(signed(DiffConxD(DiffConxD'high).data((REG_WIDTH - 1) downto (REG_WIDTH - Bout))));
 	ValidxSO							<= DiffConxD(DiffConxD'high).valid;
 	
 end architecture arch;

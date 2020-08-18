@@ -10,7 +10,7 @@ gtkw_file=$entity_top".gtkw"
 set -e
 
 echo '########## Simulation ##########'
-ghdl -r $entity_top --stop-time=1ms --fst=$fst_file     # generate fst file
+ghdl -r $entity_top --stop-time=10ms --fst=$fst_file     # generate fst file
 
 echo '########## View ################'
 if [ ! -f "$gtkw_file" ]

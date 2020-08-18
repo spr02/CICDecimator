@@ -4,6 +4,9 @@ use ieee.numeric_std.all;
 
 use std.textio.all;
 
+library work;
+use work.math_pkg.all;
+
 entity cic_decimator_tb is
 end cic_decimator_tb;
 
@@ -71,12 +74,13 @@ architecture behav of cic_decimator_tb is
 	
 	constant N			: integer := 4;
 	constant M			: integer := 1;
-	constant R			: integer := 8;
+	constant R			: integer := 16;
 	
-	constant B			: integer := 8;
+	constant Bin		: integer := 4;
+	constant Bout		: integer := 20;
 	
 	
-	signal s_cnt					: unsigned((B - 1) downto 0) := to_unsigned(1, B);
+	signal s_cnt					: unsigned((Bin - 1) downto 0) := to_unsigned(1, Bin);
 	
 	
 	signal ClkxC					: std_logic;
@@ -85,7 +89,8 @@ architecture behav of cic_decimator_tb is
 	
 	signal s_valid_i, s_valid_o		: std_logic;
 	signal s_ready_i, s_ready_o		: std_logic;
-	signal s_data_i, s_data_o			: std_logic_vector((B - 1) downto 0);
+	signal s_data_i					: std_logic_vector((Bin - 1) downto 0);
+	signal s_data_o					: std_logic_vector((Bout - 1) downto 0);
 	
 begin
 
@@ -150,15 +155,20 @@ begin
 	
 	I0 : entity work.cic_decim
 	generic map(
-		N	=> N,
-		M	=> M,
-		R	=> R,
-		B	=> B
+-- 		ENCODING	=> "onehot",
+		ENCODING	=> "binary",
+		N			=> N,
+		M			=> M,
+		R			=> R,
+		Bin			=> Bin,
+		Bout			=> Bout
 	)
 	port map(
 		ClkxCI		=> ClkxC,
 		RstxRBI		=> RstxRB,
 		ClkEnxSI	=> '1',
+		RatexSI		=> std_logic_vector(to_unsigned(16, ceil_log2(R))),
+-- 		RatexSI		=> x"05",
 		ValidxSI	=> s_valid_i,
 		ReadyxSO	=> s_ready_o,
 		DataxDI		=> s_data_i,
@@ -218,7 +228,7 @@ begin
 	begin
 		s_valid_i	<= '1';
 		s_ready_i	<= '1';
-		s_data_i	<= std_logic_vector(to_signed(1, B));
+		s_data_i	<= std_logic_vector(to_signed(1, Bin));
 		
 		wait until rising_edge(RstxRB);
 		

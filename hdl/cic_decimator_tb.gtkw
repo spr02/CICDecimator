@@ -1,0 +1,76 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Tue Feb  4 18:26:24 2020
+[*]
+[dumpfile] "/home/jannik/git_desktop/CICDecimator/hdl/cic_decimator_tb.fst"
+[dumpfile_mtime] "Tue Feb  4 18:26:07 2020"
+[dumpfile_size] 92730
+[savefile] "/home/jannik/git_desktop/CICDecimator/hdl/cic_decimator_tb.gtkw"
+[timestart] 0
+[size] 1920 1015
+[pos] 3 0
+*-34.100998 4190000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] i0.
+[treeopen] i0.gen_diff(1).
+[treeopen] i0.gen_diff(2).
+[treeopen] i0.gen_diff(4).
+[treeopen] i0.gen_int(1).
+[treeopen] i0.gen_int(2).
+[treeopen] i0.gen_int(3).
+[treeopen] i0.gen_int(4).
+[sst_width] 304
+[signals_width] 434
+[sst_expanded] 1
+[sst_vpaned_height] 288
+@28
+clkxc
+rstxrb
+@200
+-AXIS Input
+@28
+[color] 2
+i0.readyxso
+[color] 2
+i0.validxsi
+@200
+-AXIS Output
+@28
+[color] 1
+i0.readyxsi
+[color] 1
+i0.validxso
+@421
+s_data_o[19:0]
+@200
+-Internal
+@28
+i0.gen_int(1).cicintegrator.validxsi
+i0.gen_int(1).cicintegrator.readyxso
+i0.gen_int(1).cicintegrator.validxso
+i0.gen_int(1).cicintegrator.readyxsi
+i0.gen_int(2).cicintegrator.validxso
+i0.gen_int(3).cicintegrator.validxso
+i0.gen_int(4).cicintegrator.validxso
+@200
+-Diff
+@28
+i0.gen_diff(1).cicdifferentiator.validxsi
+i0.gen_diff(2).cicdifferentiator.validxsi
+@200
+-ds
+@28
+i0.cicdownsampler.clkenxsi
+i0.cicdownsampler.clkxci
+i0.cicdownsampler.dsreadyxs
+i0.cicdownsampler.dsvalidxs
+i0.cicdownsampler.inrdxs
+i0.cicdownsampler.outenxs
+i0.cicdownsampler.outrdxs
+i0.cicdownsampler.readyxso
+i0.cicdownsampler.readyxsp
+i0.cicdownsampler.rstxrbi
+i0.cicdownsampler.validxsi
+i0.cicdownsampler.validxso
+i0.cicdownsampler.validxsp
+[pattern_trace] 1
+[pattern_trace] 0

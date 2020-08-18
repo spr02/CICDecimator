@@ -7,3 +7,8 @@
 *.fst
 hdl/work-obj93.cf
 hdl/work-obj08.cf
+hdl/cic_decimator_tb
+hdl/out
+
+#python
+ref/__pycache__
